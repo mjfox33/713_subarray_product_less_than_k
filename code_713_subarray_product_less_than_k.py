@@ -2,20 +2,16 @@ import math
 class Solution:
     def numSubarrayProductLessThanK(self, nums: list[int], k: int) -> int:
         n = len(nums)
+        pointer_left = 0 # need to use sliding scale
         pointer_right = 0
         result = 0
-        r2 = list()
+        product = 1
         # if the value at i is less than k it's in
-        for i in range(n):
-            pointer_right = min(i + 1, n-1)
-            if nums[i] < k:
-                result += 1
-                r2.append(nums[i])
-            if i == pointer_right:
-                continue
-            while math.prod(nums[i:pointer_right+1]) < k and pointer_right < n:
-                r2.append(nums[i:pointer_right+1])
-                result += 1
-                pointer_right += 1
-
+        for pointer_right in range(n):
+            product *= nums[pointer_right]
+            
+            while product >= k and pointer_left <= pointer_right:
+                product /= nums[pointer_left]
+                pointer_left += 1
+            result += pointer_right - pointer_left + 1
         return result
